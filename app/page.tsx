@@ -34,7 +34,7 @@ export default function HomePage() {
       <header className="bg-white border-b border-secondary/20">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="inline-flex items-center">
-            <Image src="/logo.svg" alt="LoanBuddy" width={150} height={45} className="cursor-pointer" />
+            <Image src="/placeholder-logo.svg" alt="LoanBuddy" width={150} height={45} className="cursor-pointer" />
           </Link>
           <div className="flex gap-4">
             <Button
@@ -207,7 +207,7 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className="font-serif font-semibold text-foreground">Personal</h3>
+                <h3 className="font-serif font-semibold text-xl mb-4 text-foreground">Personal</h3>
               </Card>
               <Card className="bg-white p-4 rounded-xl shadow-sm border border-border text-center">
                 <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -216,11 +216,11 @@ export default function HomePage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M19 21V5a2 2 0 002-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      d="M19 21V5a2 2 0 002-2H7a2 2 0 00-2-2V9a2 2 0 00-2 2h14a2 2 0 002-2z"
                     />
                   </svg>
                 </div>
-                <h3 className="font-serif font-semibold text-foreground">Business</h3>
+                <h3 className="font-serif font-semibold text-xl mb-4 text-foreground">Business</h3>
               </Card>
               <Card className="bg-white p-4 rounded-xl shadow-sm border border-border text-center">
                 <div className="w-12 h-12 bg-tertiary/20 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -233,7 +233,7 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className="font-serif font-semibold text-foreground">Mortgage</h3>
+                <h3 className="font-serif font-semibold text-xl mb-4 text-foreground">Mortgage</h3>
               </Card>
               <Card className="bg-white p-4 rounded-xl shadow-sm border border-border text-center">
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-3">
@@ -246,7 +246,7 @@ export default function HomePage() {
                     />
                   </svg>
                 </div>
-                <h3 className="font-serif font-semibold text-foreground">Education</h3>
+                <h3 className="font-serif font-semibold text-xl mb-4 text-foreground">Education</h3>
               </Card>
             </div>
           </div>
@@ -475,7 +475,7 @@ export default function HomePage() {
             <div>
               <Link href="/" className="inline-flex items-center">
                 <Image
-                  src="/logo.svg"
+                  src="/placeholder-logo.svg"
                   alt="LoanBuddy"
                   width={120}
                   height={36}
