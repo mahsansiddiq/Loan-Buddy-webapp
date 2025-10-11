@@ -1,11 +1,11 @@
 import type React from "react"
-import { Nunito_Sans, Inter } from "next/font/google"
+import { Encode_Sans, Inter } from "next/font/google"
 import "./globals.css"
 import { Providers } from "./providers"
 
-const nunitoSans = Nunito_Sans({
+const encodeSans = Encode_Sans({
   subsets: ["latin"],
-  variable: "--font-nunito-sans",
+  variable: "--font-encode-sans",
   display: "swap",
 })
 
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${nunitoSans.variable} ${inter.variable} antialiased`}>
+    <html lang="en" className={`${encodeSans.variable} ${inter.variable} antialiased`}>
       <body className="min-h-screen bg-background text-foreground">
         <Providers>{children}</Providers>
       </body>

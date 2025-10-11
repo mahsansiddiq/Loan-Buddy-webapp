@@ -6,8 +6,39 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { useAuth } from "@/contexts/auth-context"
 import { getLoansByBorrower, getNotificationsByUser, formatCurrency, formatDate, getStatusColor } from "@/lib/mock-data"
-import { Plus, CreditCard, Calendar, TrendingUp, AlertCircle } from "lucide-react"
 import Link from "next/link"
+
+const PlusIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 5v14" />
+    <path d="M5 12h14" />
+  </svg>
+)
+const CreditCardIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="2" y="5" width="20" height="14" rx="2" />
+    <path d="M2 10h20" />
+  </svg>
+)
+const CalendarIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="4" width="18" height="18" rx="2" />
+    <path d="M16 2v4M8 2v4M3 10h18" />
+  </svg>
+)
+const TrendingUpIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 17l6-6 4 4 7-7" />
+    <path d="M14 5h7v7" />
+  </svg>
+)
+const AlertCircleIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 8v5" />
+    <path d="M12 16h.01" />
+  </svg>
+)
 
 export function BorrowerDashboard() {
   const { user } = useAuth()
@@ -28,6 +59,8 @@ export function BorrowerDashboard() {
   const nextPaymentLoan = activeLoans.find((loan) => loan.nextDueDate)
   const nextPaymentAmount = nextPaymentLoan?.monthlyPayment || 0
 
+  const firstActiveLoan = activeLoans[0]
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -36,12 +69,22 @@ export function BorrowerDashboard() {
           <h1 className="text-3xl font-serif font-bold text-balance">Welcome back, {user.name.split(" ")[0]}!</h1>
           <p className="text-muted-foreground">Here's an overview of your loan activity</p>
         </div>
-        <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
-          <Link href="/apply" className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            Apply for Loan
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          {firstActiveLoan && (
+            <Button className="bg-secondary text-white hover:bg-secondary/90" asChild>
+              <Link href={`/loans/${firstActiveLoan.id}/repay`} className="flex items-center gap-2">
+                <CreditCardIcon />
+                Make a Payment
+              </Link>
+            </Button>
+          )}
+          <Button className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
+            <Link href="/apply" className="flex items-center gap-2">
+              <PlusIcon />
+              Apply for Loan
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Overview Cards */}
@@ -49,7 +92,7 @@ export function BorrowerDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Loans</CardTitle>
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
+            <CreditCardIcon />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{activeLoans.length}</div>
@@ -60,7 +103,7 @@ export function BorrowerDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Pending Requests</CardTitle>
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+            <AlertCircleIcon />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{pendingLoans.length}</div>
@@ -71,7 +114,7 @@ export function BorrowerDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Outstanding Balance</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <TrendingUpIcon />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(totalOutstanding)}</div>
@@ -82,7 +125,7 @@ export function BorrowerDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Next Payment</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CalendarIcon />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(nextPaymentAmount)}</div>
@@ -104,7 +147,9 @@ export function BorrowerDashboard() {
             <CardContent className="space-y-4">
               {loans.length === 0 ? (
                 <div className="text-center py-8">
-                  <CreditCard className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                  <div className="text-4xl mb-4">
+                    <CreditCardIcon />
+                  </div>
                   <h3 className="text-lg font-medium mb-2">No loans yet</h3>
                   <p className="text-muted-foreground mb-4">Start by applying for your first loan</p>
                   <Button asChild>
@@ -122,7 +167,6 @@ export function BorrowerDashboard() {
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <span>{formatCurrency(loan.amount)}</span>
                         <span>{loan.termMonths} months</span>
-                        {loan.interestRate && <span>{loan.interestRate}% APR</span>}
                       </div>
                       {loan.status === "active" && (
                         <div className="mt-3">
@@ -163,19 +207,22 @@ export function BorrowerDashboard() {
             <CardContent className="space-y-3">
               <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
                 <Link href="/apply" className="flex items-center gap-2">
-                  <Plus className="w-4 h-4" />
+                  <PlusIcon />
                   Apply for New Loan
                 </Link>
               </Button>
               <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
-                <Link href="/repayments" className="flex items-center gap-2">
-                  <CreditCard className="w-4 h-4" />
+                <Link
+                  href={firstActiveLoan ? `/loans/${firstActiveLoan.id}/repay` : "/loans"}
+                  className="flex items-center gap-2"
+                >
+                  <CreditCardIcon />
                   Make Payment
                 </Link>
               </Button>
               <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
                 <Link href="/loans" className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
+                  <TrendingUpIcon />
                   View Loan History
                 </Link>
               </Button>

@@ -39,6 +39,8 @@
   --sidebar-accent-foreground: #0a0903;
   --sidebar-border: rgba(10, 9, 3, 0.1);
   --sidebar-ring: #574ae2;
+  --font-inter: "Inter", sans-serif;
+  --font-encode-sans: "Encode Sans", sans-serif;
 }
 
 .dark {
@@ -74,9 +76,10 @@
 }
 
 @theme inline {
-  /* Added font variables for Nunito Sans and Inter */
+  /* Encode Sans for headings, Inter for body */
   --font-sans: var(--font-inter);
-  --font-serif: var(--font-nunito-sans);
+  /* Encode Sans for headings */
+  --font-serif: var(--font-encode-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

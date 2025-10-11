@@ -33,7 +33,9 @@ export default function HomePage() {
     <div className="min-h-screen bg-background">
       <header className="bg-white border-b border-secondary/20">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Image src="/logo.svg" alt="LoanBuddy" width={150} height={45} />
+          <Link href="/" className="inline-flex items-center">
+            <Image src="/logo.svg" alt="LoanBuddy" width={150} height={45} className="cursor-pointer" />
+          </Link>
           <div className="flex gap-4">
             <Button
               variant="outline"
@@ -161,7 +163,7 @@ export default function HomePage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 005.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                     />
                   </svg>
                 </div>
@@ -214,7 +216,7 @@ export default function HomePage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      d="M19 21V5a2 2 0 002-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
                     />
                   </svg>
                 </div>
@@ -240,7 +242,7 @@ export default function HomePage() {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M12 8H7m5 0h5"
                     />
                   </svg>
                 </div>
@@ -383,20 +385,20 @@ export default function HomePage() {
             <CardContent className="p-0">
               <div className="space-y-6">
                 <div>
-                  <h3 className="font-serif font-semibold mb-2">How secure is my information?</h3>
+                  <h3 className="text-xl font-serif font-semibold mb-2">How secure is my information?</h3>
                   <p className="font-sans text-white/90 leading-relaxed">
                     We use bank-level encryption and security measures to protect all your personal and financial
                     information.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-serif font-semibold mb-2">What types of loans are available?</h3>
+                  <h3 className="text-xl font-serif font-semibold mb-2">What types of loans are available?</h3>
                   <p className="font-sans text-white/90 leading-relaxed">
                     We offer personal loans, business loans, mortgages, and education loans with competitive rates.
                   </p>
                 </div>
                 <div>
-                  <h3 className="font-serif font-semibold mb-2">How long does the approval process take?</h3>
+                  <h3 className="text-xl font-serif font-semibold mb-2">How long does the approval process take?</h3>
                   <p className="font-sans text-white/90 leading-relaxed">
                     Most applications are reviewed within 24-48 hours, with funds available shortly after approval.
                   </p>
@@ -451,7 +453,7 @@ export default function HomePage() {
             </Card>
             <Card className="bg-secondary text-white p-8 rounded-2xl">
               <CardContent className="p-0">
-                <h3 className="font-serif font-semibold text-xl mb-6">Ready to Start?</h3>
+                <h3 className="font-serif font-semibold text-xl mb-6 text-foreground">Ready to Start?</h3>
                 <p className="font-sans text-white/90 mb-6 leading-relaxed">
                   Join thousands of users who trust LoanBuddy for their lending and borrowing needs.
                 </p>
@@ -471,7 +473,15 @@ export default function HomePage() {
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <Image src="/logo.svg" alt="LoanBuddy" width={120} height={36} className="mb-4 brightness-0 invert" />
+              <Link href="/" className="inline-flex items-center">
+                <Image
+                  src="/logo.svg"
+                  alt="LoanBuddy"
+                  width={120}
+                  height={36}
+                  className="mb-4 brightness-0 invert cursor-pointer"
+                />
+              </Link>
               <p className="font-sans text-sm text-background/80 leading-relaxed">
                 Secure and transparent loan management platform connecting borrowers and lenders.
               </p>

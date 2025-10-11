@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@/contexts/auth-context"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,13 +13,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { getAllLoans, formatCurrency, formatDate } from "@/lib/mock-data"
-import { CreditCard, Upload, AlertCircle } from "lucide-react"
+
+const CreditCardIcon = () => <span>💳</span>
+const UploadIcon = () => <span>📤</span>
+const AlertCircleIcon = () => <span>⚠️</span>
+const ArrowLeftIcon = () => <span>←</span>
 
 interface RepaymentFormProps {
   loanId: string
 }
 
 export function RepaymentForm({ loanId }: RepaymentFormProps) {
+  const { user } = useAuth()
   const [formData, setFormData] = useState({
     amount: "",
     method: "",
@@ -35,9 +41,57 @@ export function RepaymentForm({ loanId }: RepaymentFormProps) {
   if (!loan) {
     return (
       <div className="text-center py-12">
-        <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+        <div className="text-4xl mb-4">
+          <AlertCircleIcon />
+        </div>
         <h2 className="text-xl font-semibold mb-2">Loan Not Found</h2>
-        <p className="text-muted-foreground">The loan you're trying to make a payment for doesn't exist.</p>
+        <p className="text-muted-foreground mb-4">The loan you're trying to make a payment for doesn't exist.</p>
+        <Button onClick={() => router.push("/loans")} variant="outline">
+          <div className="flex items-center">
+            <ArrowLeftIcon />
+            <span className="ml-2">Back to Loans</span>
+          </div>
+        </Button>
+      </div>
+    )
+  }
+
+  // Check if user owns this loan
+  if (user?.id !== loan.borrowerId) {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-4">
+          <AlertCircleIcon />
+        </div>
+        <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
+        <p className="text-muted-foreground mb-4">You don't have permission to make payments on this loan.</p>
+        <Button onClick={() => router.push("/loans")} variant="outline">
+          <div className="flex items-center">
+            <ArrowLeftIcon />
+            <span className="ml-2">Back to Loans</span>
+          </div>
+        </Button>
+      </div>
+    )
+  }
+
+  // Check if loan allows payments
+  if (loan.status !== "active") {
+    return (
+      <div className="text-center py-12">
+        <div className="text-4xl mb-4">
+          <AlertCircleIcon />
+        </div>
+        <h2 className="text-xl font-semibold mb-2">Payment Not Available</h2>
+        <p className="text-muted-foreground mb-4">
+          Payments can only be made on active loans. This loan is currently {loan.status}.
+        </p>
+        <Button onClick={() => router.push(`/loans/${loanId}`)} variant="outline">
+          <div className="flex items-center">
+            <ArrowLeftIcon />
+            <span className="ml-2">View Loan Details</span>
+          </div>
+        </Button>
       </div>
     )
   }
@@ -72,23 +126,39 @@ export function RepaymentForm({ loanId }: RepaymentFormProps) {
 
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // In a real app, this would submit to your API
-    console.log("Payment submitted:", formData)
+      // In a real app, this would submit to your API
+      console.log("Payment submitted:", {
+        loanId,
+        borrowerId: user?.id,
+        ...formData,
+        amount,
+      })
 
-    setIsSubmitting(false)
-    router.push(`/loans/${loanId}?success=payment-submitted`)
+      // Show success and redirect
+      router.push(`/loans/${loanId}?success=payment-submitted`)
+    } catch (error) {
+      setError("Failed to process payment. Please try again.")
+      setIsSubmitting(false)
+    }
   }
 
   return (
     <div className="max-w-2xl mx-auto space-y-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-serif font-bold text-balance mb-2">Make a Payment</h1>
-        <p className="text-muted-foreground">
-          Loan #{loan.id} • {loan.purpose}
-        </p>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="sm" onClick={() => router.back()} className="flex items-center gap-2">
+          <ArrowLeftIcon />
+          Back
+        </Button>
+        <div className="text-center flex-1">
+          <h1 className="text-3xl font-serif font-bold text-balance mb-2">Make a Payment</h1>
+          <p className="text-muted-foreground">
+            Loan #{loan.id} • {loan.purpose}
+          </p>
+        </div>
       </div>
 
       {/* Loan Summary */}
@@ -119,7 +189,10 @@ export function RepaymentForm({ loanId }: RepaymentFormProps) {
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <Alert variant="destructive">
-            <AlertDescription>{error}</AlertDescription>
+            <div className="flex items-center">
+              <AlertCircleIcon />
+              <AlertDescription className="ml-2">{error}</AlertDescription>
+            </div>
           </Alert>
         )}
 
@@ -127,7 +200,7 @@ export function RepaymentForm({ loanId }: RepaymentFormProps) {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5" />
+              <CreditCardIcon />
               Payment Details
             </CardTitle>
             <CardDescription>Enter your payment information</CardDescription>
@@ -205,7 +278,7 @@ export function RepaymentForm({ loanId }: RepaymentFormProps) {
                   onChange={handleFileChange}
                   className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                 />
-                <Upload className="w-4 h-4 text-muted-foreground" />
+                <UploadIcon />
               </div>
               <p className="text-xs text-muted-foreground">Upload a receipt or proof of payment (PDF, JPG, PNG)</p>
             </div>

@@ -14,7 +14,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useAuth } from "@/contexts/auth-context"
 import { formatCurrency } from "@/lib/mock-data"
-import { Calculator, FileText, Shield, Upload, Camera, AlertTriangle } from "lucide-react"
+
+const Calculator = () => <span>🧮</span>
+const FileText = () => <span>📄</span>
+const Shield = () => <span>🛡️</span>
+const Upload = () => <span>📤</span>
+const Camera = () => <span>📷</span>
+const AlertTriangle = () => <span>⚠️</span>
 
 export function LoanApplicationForm() {
   const [formData, setFormData] = useState({
@@ -60,14 +66,7 @@ export function LoanApplicationForm() {
   const calculateMonthlyPayment = () => {
     const principal = Number.parseFloat(formData.amount) || 0
     const months = Number.parseInt(formData.termMonths) || 1
-    const estimatedRate = 0.08 // 8% estimated rate
-    const monthlyRate = estimatedRate / 12
-
-    if (principal > 0 && months > 0) {
-      const payment =
-        (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
-      return payment
-    }
+    if (principal > 0 && months > 0) return principal / months
     return 0
   }
 
@@ -152,7 +151,7 @@ export function LoanApplicationForm() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calculator className="w-5 h-5" />
+              <Calculator />
               Loan Details
             </CardTitle>
             <CardDescription>Tell us about the loan you need</CardDescription>
@@ -227,12 +226,10 @@ export function LoanApplicationForm() {
               />
             </div>
 
-            {/* Payment Estimate */}
             {formData.amount && formData.termMonths && (
               <div className="p-4 bg-muted/50 rounded-lg">
-                <h4 className="font-medium mb-2">Estimated Monthly Payment</h4>
+                <h4 className="font-medium mb-2">Estimated Monthly Payment (no interest)</h4>
                 <div className="text-2xl font-bold text-primary">{formatCurrency(monthlyPayment)}</div>
-                <p className="text-xs text-muted-foreground mt-1">Based on estimated 8% APR. Actual rate may vary.</p>
               </div>
             )}
           </CardContent>
@@ -242,7 +239,7 @@ export function LoanApplicationForm() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
+              <FileText />
               Financial Information
             </CardTitle>
             <CardDescription>Help us assess your application</CardDescription>
@@ -287,7 +284,7 @@ export function LoanApplicationForm() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Camera className="w-5 h-5" />
+              <Camera />
               Identity Verification
             </CardTitle>
             <CardDescription>Upload your CNIC and provide national ID information for verification</CardDescription>
@@ -416,7 +413,7 @@ export function LoanApplicationForm() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Shield className="w-5 h-5" />
+              <Shield />
               Terms and Conditions
             </CardTitle>
           </CardHeader>

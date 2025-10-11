@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -17,38 +16,35 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { CheckCircle, XCircle, Flag, AlertTriangle, Eye, FileText } from "lucide-react"
+const CheckCircle = () => <span>✅</span>
+const XCircle = () => <span>🛑</span>
+const Flag = () => <span>🚩</span>
+const AlertTriangle = () => <span>⚠️</span>
+const Eye = () => <span>👁️</span>
+const FileText = () => <span>📄</span>
 import { formatCurrency, type Loan } from "@/lib/mock-data"
 
 interface LoanApprovalActionsProps {
   loan: Loan
   userRole: "lender" | "admin"
-  onApprove?: (loanId: string, interestRate: number, notes?: string) => void
+  onApprove?: (loanId: string, notes?: string) => void
   onReject?: (loanId: string, reason: string) => void
   onFlag?: (loanId: string, reason: string) => void
 }
 
 export function LoanApprovalActions({ loan, userRole, onApprove, onReject, onFlag }: LoanApprovalActionsProps) {
-  const [approvalData, setApprovalData] = useState({
-    interestRate: "8.0",
-    notes: "",
-  })
+  const [approvalData, setApprovalData] = useState({ notes: "" })
   const [rejectionReason, setRejectionReason] = useState("")
   const [flagReason, setFlagReason] = useState("")
   const [isProcessing, setIsProcessing] = useState(false)
   const [showVerificationDetails, setShowVerificationDetails] = useState(false)
 
   const handleApprove = async () => {
-    if (!approvalData.interestRate) {
-      alert("Please enter an interest rate")
-      return
-    }
-
     setIsProcessing(true)
     await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate API call
 
     if (onApprove) {
-      onApprove(loan.id, Number.parseFloat(approvalData.interestRate), approvalData.notes)
+      onApprove(loan.id, approvalData.notes)
     }
 
     setIsProcessing(false)
@@ -88,13 +84,8 @@ export function LoanApprovalActions({ loan, userRole, onApprove, onReject, onFla
 
   const calculateMonthlyPayment = () => {
     const principal = loan.amount
-    const months = loan.termMonths
-    const rate = Number.parseFloat(approvalData.interestRate) / 100 / 12
-
-    if (rate === 0) return principal / months
-
-    const payment = (principal * rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1)
-    return payment
+    const months = loan.termMonths || 1
+    return principal / months
   }
 
   const isIncomplete = !loan.isComplete || !loan.verification?.primaryIdNumber || !loan.verification?.secondaryIdNumber
@@ -193,35 +184,16 @@ export function LoanApprovalActions({ loan, userRole, onApprove, onReject, onFla
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Approve Loan Application</DialogTitle>
-                <DialogDescription>
-                  Set the interest rate and terms for this {formatCurrency(loan.amount)} loan.
-                </DialogDescription>
+                <DialogDescription>Set the terms for this {formatCurrency(loan.amount)} loan.</DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="interestRate">Interest Rate (% per annum) *</Label>
-                  <Input
-                    id="interestRate"
-                    type="number"
-                    min="1"
-                    max="30"
-                    step="0.1"
-                    value={approvalData.interestRate}
-                    onChange={(e) => setApprovalData({ ...approvalData, interestRate: e.target.value })}
-                    placeholder="8.0"
-                  />
-                </div>
-
-                {approvalData.interestRate && (
-                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                    <h4 className="font-medium text-green-900 mb-1">Loan Terms Preview</h4>
-                    <div className="text-sm text-green-800 space-y-1">
-                      <p>Monthly Payment: {formatCurrency(calculateMonthlyPayment())}</p>
-                      <p>Total Repayment: {formatCurrency(calculateMonthlyPayment() * loan.termMonths)}</p>
-                      <p>Total Interest: {formatCurrency(calculateMonthlyPayment() * loan.termMonths - loan.amount)}</p>
-                    </div>
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <h4 className="font-medium text-green-900 mb-1">Loan Terms Preview</h4>
+                  <div className="text-sm text-green-800 space-y-1">
+                    <p>Monthly Payment: {formatCurrency(calculateMonthlyPayment())}</p>
+                    <p>Total Repayment: {formatCurrency(calculateMonthlyPayment() * loan.termMonths)}</p>
                   </div>
-                )}
+                </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="notes">Notes (Optional)</Label>

@@ -2,9 +2,10 @@
 
 import { useAuth } from "@/contexts/auth-context"
 import { LoanList } from "@/components/loans/loan-list"
-import { mockLoans, mockLenderLoans, getAllLoans, getLoansByBorrower } from "@/lib/mock-data"
+import { getAllLoans, getLoansByBorrower } from "@/lib/mock-data"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { DashboardLayout } from "@/components/layout/dashboard-layout"
 
 export default function LoansPage() {
   const { user } = useAuth()
@@ -23,9 +24,10 @@ export default function LoansPage() {
     if (user.role === "borrower") {
       userLoans = getLoansByBorrower(user.id)
     } else if (user.role === "lender") {
-      userLoans = [...mockLoans, ...mockLenderLoans].filter(
-        (loan) => loan.lenderId === user.id || loan.status === "pending",
-      )
+      const allLoans = getAllLoans()
+      const pendingLoans = allLoans.filter((loan) => loan.status === "pending" && !loan.lenderId)
+      const myFundedLoans = allLoans.filter((loan) => loan.lenderId === user.id)
+      userLoans = [...pendingLoans, ...myFundedLoans]
     } else if (user.role === "admin") {
       userLoans = getAllLoans()
     }
@@ -45,13 +47,15 @@ export default function LoansPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <LoanList
-        loans={loans}
-        userRole={user.role}
-        showBorrowerInfo={user.role === "admin" || user.role === "lender"}
-        onFlagLoan={user.role === "admin" ? handleFlagLoan : undefined}
-      />
-    </div>
+    <DashboardLayout>
+      <div className="container mx-auto px-4 py-8">
+        <LoanList
+          loans={loans}
+          userRole={user.role}
+          showBorrowerInfo={user.role === "admin" || user.role === "lender"}
+          onFlagLoan={user.role === "admin" ? handleFlagLoan : undefined}
+        />
+      </div>
+    </DashboardLayout>
   )
 }

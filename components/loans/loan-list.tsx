@@ -7,8 +7,15 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { formatCurrency, formatDate, getStatusColor, type Loan } from "@/lib/mock-data"
-import { Search, Filter, Eye, Download, Flag, AlertTriangle } from "lucide-react"
 import Link from "next/link"
+
+const SearchIcon = () => <span>🔍</span>
+const FilterIcon = () => <span>🔽</span>
+const EyeIcon = () => <span>👁️</span>
+const DownloadIcon = () => <span>⬇️</span>
+const FlagIcon = () => <span>🚩</span>
+const AlertTriangleIcon = () => <span>⚠️</span>
+const CreditCardIcon = () => <span>💳</span>
 
 interface LoanListProps {
   loans: Loan[]
@@ -63,12 +70,14 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold">{userRole === "admin" ? "All Loans" : "My Loans"}</h1>
+          <h1 className="text-2xl font-serif font-bold">
+            {userRole === "admin" ? "All Loans" : userRole === "lender" ? "Loan Requests" : "My Loans"}
+          </h1>
           <p className="text-muted-foreground">
             {userRole === "admin"
               ? "Manage all loans across the platform"
               : userRole === "lender"
-                ? "Track your lending portfolio"
+                ? "Browse loan requests and manage your funded loans"
                 : "View your loan applications and active loans"}
           </p>
         </div>
@@ -86,7 +95,9 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                  <SearchIcon />
+                </div>
                 <Input
                   placeholder="Search by loan ID, purpose, or lender..."
                   value={searchTerm}
@@ -98,8 +109,10 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
 
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-[180px]">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Filter by status" />
+                <div className="flex items-center">
+                  <FilterIcon />
+                  <span className="ml-2">Filter by status</span>
+                </div>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Status</SelectItem>
@@ -139,6 +152,9 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
                     <Link href="/apply">Apply for Your First Loan</Link>
                   </Button>
                 )}
+                {userRole === "lender" && (
+                  <p className="text-sm text-muted-foreground mt-2">Check back later for new loan requests to fund.</p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -156,8 +172,10 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
                         </Badge>
                         {!loan.isComplete && (
                           <Badge variant="outline" className="text-orange-600 border-orange-200">
-                            <AlertTriangle className="w-3 h-3 mr-1" />
-                            Incomplete
+                            <div className="flex items-center">
+                              <AlertTriangleIcon />
+                              <span className="ml-1">Incomplete</span>
+                            </div>
                           </Badge>
                         )}
                       </div>
@@ -215,16 +233,31 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
                   <div className="flex flex-col sm:flex-row gap-2">
                     <Button variant="outline" size="sm" asChild>
                       <Link href={`/loans/${loan.id}`}>
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Details
+                        <div className="flex items-center">
+                          <EyeIcon />
+                          <span className="ml-2">View Details</span>
+                        </div>
                       </Link>
                     </Button>
+
+                    {userRole === "borrower" && loan.status === "active" && (
+                      <Button size="sm" asChild className="bg-primary hover:bg-primary/90">
+                        <Link href={`/loans/${loan.id}/repay`}>
+                          <div className="flex items-center">
+                            <CreditCardIcon />
+                            <span className="ml-2">Make Payment</span>
+                          </div>
+                        </Link>
+                      </Button>
+                    )}
 
                     {(loan.status === "approved" || loan.status === "active" || loan.status === "closed") && (
                       <Button variant="outline" size="sm" asChild>
                         <Link href={`/loans/${loan.id}/agreement`}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Agreement
+                          <div className="flex items-center">
+                            <DownloadIcon />
+                            <span className="ml-2">Agreement</span>
+                          </div>
                         </Link>
                       </Button>
                     )}
@@ -236,8 +269,10 @@ export function LoanList({ loans, userRole, showBorrowerInfo = false, onFlagLoan
                         onClick={() => onFlagLoan(loan.id)}
                         className="text-orange-600 hover:text-orange-700"
                       >
-                        <Flag className="w-4 h-4 mr-2" />
-                        Flag
+                        <div className="flex items-center">
+                          <FlagIcon />
+                          <span className="ml-2">Flag</span>
+                        </div>
                       </Button>
                     )}
                   </div>

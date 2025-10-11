@@ -14,8 +14,11 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useAuth } from "@/contexts/auth-context"
 import { getNotificationsByUser, formatDate } from "@/lib/mock-data"
-import { Bell, Eye, Settings } from "lucide-react"
 import Link from "next/link"
+
+const BellIcon = () => <span>🔔</span>
+const EyeIcon = () => <span>👁️</span>
+const SettingsIcon = () => <span>⚙️</span>
 
 export function NotificationDropdown() {
   const { user } = useAuth()
@@ -50,7 +53,7 @@ export function NotificationDropdown() {
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="sm" className="relative">
-          <Bell className="w-4 h-4" />
+          <BellIcon />
           {unreadNotifications.length > 0 && (
             <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs">
               {unreadNotifications.length}
@@ -98,13 +101,13 @@ export function NotificationDropdown() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/notifications" className="flex items-center gap-2">
-            <Eye className="w-4 h-4" />
+            <EyeIcon />
             View All Notifications
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/settings" className="flex items-center gap-2">
-            <Settings className="w-4 h-4" />
+            <SettingsIcon />
             Notification Settings
           </Link>
         </DropdownMenuItem>

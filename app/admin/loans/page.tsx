@@ -16,10 +16,48 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { getAllLoans, formatCurrency, formatDate, getStatusColor } from "@/lib/mock-data"
-import { Search, MoreHorizontal, Eye, AlertTriangle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
+
+const SearchIcon = () => (
+  <svg
+    className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <path d="M21 21l-4.3-4.3" />
+  </svg>
+)
+const MoreIcon = () => (
+  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="5" cy="12" r="2" />
+    <circle cx="12" cy="12" r="2" />
+    <circle cx="19" cy="12" r="2" />
+  </svg>
+)
+const EyeIcon = () => (
+  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+)
+const AlertIcon = () => (
+  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 8v5" />
+    <path d="M12 16h.01" />
+  </svg>
+)
+const ArrowLeftIcon = () => (
+  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M19 12H5" />
+    <path d="M12 19l-7-7 7-7" />
+  </svg>
+)
 
 export default function AdminLoansPage() {
   const { user, isLoading, isAuthenticated } = useAuth()
@@ -77,7 +115,7 @@ export default function AdminLoansPage() {
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/dashboard">
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <ArrowLeftIcon />
               Back to Dashboard
             </Link>
           </Button>
@@ -145,7 +183,7 @@ export default function AdminLoansPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <SearchIcon />
                   <Input
                     placeholder="Search loans..."
                     value={searchTerm}
@@ -187,18 +225,18 @@ export default function AdminLoansPage() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreIcon />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem onClick={() => handleLoanAction(loan.id, "view")}>
-                            <Eye className="mr-2 h-4 w-4" />
+                            <EyeIcon />
                             View Details
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleLoanAction(loan.id, "flag")}>
-                            <AlertTriangle className="mr-2 h-4 w-4" />
+                            <AlertIcon />
                             Flag for Review
                           </DropdownMenuItem>
                         </DropdownMenuContent>

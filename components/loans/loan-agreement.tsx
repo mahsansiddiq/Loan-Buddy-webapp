@@ -3,7 +3,12 @@
 import { formatCurrency, formatDate, type Loan } from "@/lib/mock-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, FileText, Shield, Calendar, DollarSign } from "lucide-react"
+
+const Download = (props: any) => <span {...props}>⬇️</span>
+const FileText = () => <span>📄</span>
+const Shield = () => <span>🛡️</span>
+const Calendar = () => <span>📅</span>
+const DollarSign = () => <span>💵</span>
 
 interface LoanAgreementProps {
   loan: Loan
@@ -14,8 +19,7 @@ interface LoanAgreementProps {
 
 export function LoanAgreement({ loan, borrowerName, lenderName, onDownload }: LoanAgreementProps) {
   const generateAgreementContent = () => {
-    const totalAmount = (loan.monthlyPayment || 0) * loan.termMonths
-    const interestAmount = totalAmount - loan.amount
+    const totalAmount = (loan.monthlyPayment || 0) * loan.termMonths || loan.amount
     const currentDate = new Date().toLocaleDateString()
 
     return `
@@ -30,11 +34,9 @@ Borrower: ${borrowerName}
 
 LOAN TERMS:
 Principal Amount: ${formatCurrency(loan.amount)}
-Interest Rate: ${loan.interestRate || 8}% per annum
 Loan Term: ${loan.termMonths} months
 Monthly Payment: ${formatCurrency(loan.monthlyPayment || 0)}
 Total Amount to be Repaid: ${formatCurrency(totalAmount)}
-Total Interest: ${formatCurrency(interestAmount)}
 
 VERIFICATION DETAILS:
 Primary ID Number: ${loan.verification?.primaryIdNumber || "N/A"}
@@ -48,7 +50,7 @@ Payment Frequency: Monthly
 Payment Method: As agreed between parties
 
 TERMS AND CONDITIONS:
-1. The borrower agrees to repay the loan amount plus interest in ${loan.termMonths} equal monthly installments.
+1. The borrower agrees to repay the loan amount in ${loan.termMonths} equal monthly installments.
 2. Each payment is due on the same day of each month as the first payment date.
 3. Late payments may incur additional fees as per platform policy.
 4. The borrower may prepay the loan without penalty.
@@ -83,8 +85,7 @@ This agreement is electronically generated and legally binding upon acceptance b
     }
   }
 
-  const totalAmount = (loan.monthlyPayment || 0) * loan.termMonths
-  const interestAmount = totalAmount - loan.amount
+  const totalAmount = (loan.monthlyPayment || 0) * loan.termMonths || loan.amount
 
   return (
     <div className="space-y-6">
@@ -137,10 +138,6 @@ This agreement is electronically generated and legally binding upon acceptance b
                 <p className="text-lg font-bold text-primary">{formatCurrency(loan.amount)}</p>
               </div>
               <div>
-                <h4 className="font-medium text-sm text-muted-foreground">INTEREST RATE</h4>
-                <p className="text-lg font-semibold">{loan.interestRate || 8}% per annum</p>
-              </div>
-              <div>
                 <h4 className="font-medium text-sm text-muted-foreground">LOAN TERM</h4>
                 <p className="text-lg font-semibold">{loan.termMonths} months</p>
               </div>
@@ -151,10 +148,6 @@ This agreement is electronically generated and legally binding upon acceptance b
               <div>
                 <h4 className="font-medium text-sm text-muted-foreground">TOTAL REPAYMENT</h4>
                 <p className="text-lg font-semibold">{formatCurrency(totalAmount)}</p>
-              </div>
-              <div>
-                <h4 className="font-medium text-sm text-muted-foreground">TOTAL INTEREST</h4>
-                <p className="text-lg font-semibold">{formatCurrency(interestAmount)}</p>
               </div>
             </div>
           </CardContent>
@@ -217,10 +210,7 @@ This agreement is electronically generated and legally binding upon acceptance b
           </CardHeader>
           <CardContent>
             <div className="space-y-3 text-sm">
-              <p>
-                1. The borrower agrees to repay the loan amount plus interest in {loan.termMonths} equal monthly
-                installments.
-              </p>
+              <p>1. The borrower agrees to repay the loan amount in {loan.termMonths} equal monthly installments.</p>
               <p>2. Each payment is due on the same day of each month as the first payment date.</p>
               <p>3. Late payments may incur additional fees as per platform policy.</p>
               <p>4. The borrower may prepay the loan without penalty.</p>

@@ -14,7 +14,6 @@ import {
   getStatusColor,
   getBorrowerName,
 } from "@/lib/mock-data"
-import { FileText, User, CreditCard, Clock, CheckCircle, AlertCircle, Download } from "lucide-react"
 import Link from "next/link"
 import { LoanApprovalActions } from "./loan-approval-actions"
 import { useState } from "react"
@@ -33,7 +32,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
   if (!loan) {
     return (
       <div className="text-center py-12">
-        <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+        <span className="w-12 h-12 text-muted-foreground mx-auto mb-4">⚠️</span>
         <h2 className="text-xl font-semibold mb-2">Loan Not Found</h2>
         <p className="text-muted-foreground mb-4">
           The loan you're looking for doesn't exist or you don't have access to it.
@@ -55,7 +54,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
   if (!canViewDetails) {
     return (
       <div className="text-center py-12">
-        <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+        <span className="w-12 h-12 text-muted-foreground mx-auto mb-4">⚠️</span>
         <h2 className="text-xl font-semibold mb-2">Access Denied</h2>
         <p className="text-muted-foreground mb-4">You don't have permission to view this loan.</p>
         <Button asChild>
@@ -65,21 +64,20 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
     )
   }
 
-  const handleApprove = (loanId: string, interestRate: number, notes?: string) => {
-    console.log(`Approving loan ${loanId} with ${interestRate}% interest rate`)
+  const handleApprove = (loanId: string, notes?: string) => {
+    console.log(`[v0] Approving loan ${loanId} without interest`)
     // In a real app, this would make an API call
     setLoan((prev) =>
       prev
         ? {
             ...prev,
             status: "approved" as const,
-            interestRate,
             approvedAt: new Date().toISOString(),
-            monthlyPayment: calculateMonthlyPayment(prev.amount, prev.termMonths, interestRate),
+            monthlyPayment: calculateMonthlyPayment(prev.amount, prev.termMonths),
           }
         : null,
     )
-    alert(`Loan approved with ${interestRate}% interest rate!`)
+    alert(`Loan approved!`)
   }
 
   const handleReject = (loanId: string, reason: string) => {
@@ -94,10 +92,9 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
     alert(`Loan flagged for admin review: ${reason}`)
   }
 
-  const calculateMonthlyPayment = (principal: number, months: number, rate: number) => {
-    const monthlyRate = rate / 100 / 12
-    if (monthlyRate === 0) return principal / months
-    return (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1)
+  const calculateMonthlyPayment = (principal: number, months: number) => {
+    if (!months) return principal
+    return principal / months
   }
 
   const showApprovalActions =
@@ -144,12 +141,12 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
+                <span className="w-5 h-5">📄</span>
                 Loan Overview
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div className="text-center">
                   <div className="text-2xl font-bold">{formatCurrency(loan.amount)}</div>
                   <div className="text-sm text-muted-foreground">Principal</div>
@@ -157,10 +154,6 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
                 <div className="text-center">
                   <div className="text-2xl font-bold">{loan.termMonths}</div>
                   <div className="text-sm text-muted-foreground">Months</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold">{loan.interestRate ? `${loan.interestRate}%` : "TBD"}</div>
-                  <div className="text-sm text-muted-foreground">APR</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold">
@@ -219,7 +212,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" />
+                  <span className="w-5 h-5">💳</span>
                   Repayment History
                 </CardTitle>
                 <CardDescription>Track of all payments made</CardDescription>
@@ -230,7 +223,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
                     <div key={repayment.id} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
+                          <span className="w-4 h-4 text-green-600">✅</span>
                         </div>
                         <div>
                           <div className="font-medium">{formatCurrency(repayment.amount)}</div>
@@ -242,7 +235,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
                       </div>
                       {repayment.receiptUrl && (
                         <Button size="sm" variant="ghost">
-                          <Download className="w-3 h-3 mr-1" />
+                          <span className="w-3 h-3 mr-1">⬇️</span>
                           Receipt
                         </Button>
                       )}
@@ -260,7 +253,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <User className="w-5 h-5" />
+                <span className="w-5 h-5">👤</span>
                 Loan Parties
               </CardTitle>
             </CardHeader>
@@ -287,7 +280,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
               {user?.id === loan.borrowerId && loan.status === "active" && (
                 <Button className="w-full justify-start" asChild>
                   <Link href={`/loans/${loan.id}/repay`} className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4" />
+                    <span className="w-4 h-4">💳</span>
                     Make Payment
                   </Link>
                 </Button>
@@ -296,7 +289,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
               {(loan.status === "approved" || loan.status === "active" || loan.status === "closed") && (
                 <Button className="w-full justify-start bg-transparent" variant="outline" asChild>
                   <Link href={`/loans/${loan.id}/agreement`}>
-                    <Download className="w-4 h-4 mr-2" />
+                    <span className="w-4 h-4 mr-2">⬇️</span>
                     Download Agreement
                   </Link>
                 </Button>
@@ -308,7 +301,7 @@ export function LoanDetails({ loanId }: LoanDetailsProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Clock className="w-5 h-5" />
+                <span className="w-5 h-5">🕒</span>
                 Timeline
               </CardTitle>
             </CardHeader>

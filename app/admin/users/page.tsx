@@ -16,10 +16,56 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { mockUsers, mockBorrowers, formatDate } from "@/lib/mock-data"
-import { Search, MoreHorizontal, UserCheck, UserX, Eye, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
+
+// Define inline SVG icons
+const SearchIcon = () => (
+  <svg
+    className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <circle cx="11" cy="11" r="8" />
+    <path d="M21 21l-4.3-4.3" />
+  </svg>
+)
+const MoreIcon = () => (
+  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+    <circle cx="5" cy="12" r="2" />
+    <circle cx="12" cy="12" r="2" />
+    <circle cx="19" cy="12" r="2" />
+  </svg>
+)
+const UserCheckIcon = () => (
+  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+    <path d="M16 11l2 2 4-4" />
+  </svg>
+)
+const UserXIcon = () => (
+  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+    <path d="M17 8l5 5M22 8l-5 5" />
+  </svg>
+)
+const EyeIcon = () => (
+  <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+    <circle cx="12" cy="12" r="3" />
+  </svg>
+)
+const ArrowLeftIcon = () => (
+  <svg className="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M19 12H5" />
+    <path d="M12 19l-7-7 7-7" />
+  </svg>
+)
 
 export default function AdminUsersPage() {
   const { user, isLoading, isAuthenticated } = useAuth()
@@ -81,7 +127,7 @@ export default function AdminUsersPage() {
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/dashboard">
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <ArrowLeftIcon />
               Back to Dashboard
             </Link>
           </Button>
@@ -101,7 +147,7 @@ export default function AdminUsersPage() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                  <SearchIcon />
                   <Input
                     placeholder="Search users..."
                     value={searchTerm}
@@ -147,25 +193,25 @@ export default function AdminUsersPage() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="ghost" className="h-8 w-8 p-0">
-                            <MoreHorizontal className="h-4 w-4" />
+                            <MoreIcon />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem onClick={() => handleUserAction(user.id, "view")}>
-                            <Eye className="mr-2 h-4 w-4" />
+                            <EyeIcon />
                             View Profile
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleUserAction(user.id, "activate")}>
-                            <UserCheck className="mr-2 h-4 w-4" />
+                            <UserCheckIcon />
                             Activate
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => handleUserAction(user.id, "deactivate")}
                             className="text-red-600"
                           >
-                            <UserX className="mr-2 h-4 w-4" />
+                            <UserXIcon />
                             Deactivate
                           </DropdownMenuItem>
                         </DropdownMenuContent>

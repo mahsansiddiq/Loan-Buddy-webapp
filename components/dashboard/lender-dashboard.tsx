@@ -15,9 +15,18 @@ import {
   getBorrowerName,
   getBorrowerCreditScore,
 } from "@/lib/mock-data"
-import { DollarSign, TrendingUp, Clock, Users, Eye, Check, X, AlertTriangle, Star } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
+
+const DollarSign = () => <span>💲</span>
+const TrendingUp = () => <span>📈</span>
+const Clock = () => <span>🕒</span>
+const Users = () => <span>👥</span>
+const Eye = () => <span>👁️</span>
+const Check = () => <span>✔️</span>
+const X = () => <span>✖️</span>
+const AlertTriangle = () => <span>⚠️</span>
+const Star = () => <span>⭐</span>
 
 export function LenderDashboard() {
   const { user } = useAuth()
@@ -34,9 +43,8 @@ export function LenderDashboard() {
   const totalLent = activeLoans.reduce((sum, loan) => sum + loan.amount, 0)
   const totalRepaid = activeLoans.reduce((sum, loan) => sum + loan.totalRepaid, 0)
   const expectedReturns = activeLoans.reduce((sum, loan) => {
-    const principal = loan.amount
-    const interest = ((principal * (loan.interestRate || 0)) / 100) * (loan.termMonths / 12)
-    return sum + principal + interest
+    if (loan.monthlyPayment && loan.termMonths) return sum + loan.monthlyPayment * loan.termMonths
+    return sum + loan.amount
   }, 0)
 
   const handleLoanAction = (loanId: string, action: "approve" | "reject") => {
@@ -98,7 +106,6 @@ export function LenderDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(expectedReturns)}</div>
-            <p className="text-xs text-muted-foreground">Including interest</p>
           </CardContent>
         </Card>
       </div>
@@ -214,7 +221,6 @@ export function LenderDashboard() {
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
                               <span className="font-medium">{getBorrowerName(loan.borrowerId)}</span>
-                              <span>{loan.interestRate}% APR</span>
                             </div>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                               <span>{formatCurrency(loan.amount)}</span>
